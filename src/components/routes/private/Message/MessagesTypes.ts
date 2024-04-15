@@ -25,6 +25,9 @@ export type conversation = {
   id: number
   user1: userMessaging
   user2: userMessaging
-  messages: message[]
   timestamp: string
+}
+
+export type messages = {
+  messages: message[]
 }

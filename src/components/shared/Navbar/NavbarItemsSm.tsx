@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
 import { motion } from 'framer-motion'
 import { container, item } from '../annimations'
-import { logout } from '../../routes/public/Login/login'
+import { logout } from '../../routes/public/Login/loginApi'
 
 export type NavbarItemsSmProps = {
   toggleMenu: () => void
@@ -26,14 +26,6 @@ const NavbarItemsSm: React.FC<NavbarItemsSmProps> = ({ toggleMenu }) => {
             onClick={toggleMenu}
             className='text-sm text-center w-full p-4'
           >
-            <Link to='/'>Profile</Link>
-          </motion.li>
-
-          <motion.li
-            variants={item}
-            onClick={toggleMenu}
-            className='text-sm text-center w-full p-4'
-          >
             <Link to='/messages'>Messages</Link>
           </motion.li>
 
@@ -43,6 +35,14 @@ const NavbarItemsSm: React.FC<NavbarItemsSmProps> = ({ toggleMenu }) => {
             className='text-sm text-center w-full p-4'
           >
             <Link to='/notifications'>Notifications</Link>
+          </motion.li>
+
+          <motion.li
+            variants={item}
+            onClick={toggleMenu}
+            className='text-sm text-center w-full p-4'
+          >
+            <Link to='/explore'>Explore</Link>
           </motion.li>
 
           <motion.li

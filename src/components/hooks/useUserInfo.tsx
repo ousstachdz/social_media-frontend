@@ -14,13 +14,20 @@ export type UserInfo = {
 const useUserInfo = () => {
   const [userInfo, setUserInfo] = useState<UserInfo | undefined>()
   const axiosPrivate = useAxiosPrivate()
-
   useEffect(() => {
-    axiosPrivate.get('/get_user').then((response) => {
-      console.log(response.data)
-      setUserInfo(response.data)
-    })
-  }, [])
+    const getUserInfo = async () => {
+      await axiosPrivate
+        .get('get_user')
+        .then((response) => {
+          setUserInfo(response.data)
+        })
+        .catch((error) => {
+          console.warn(error)
+        })
+    }
+    getUserInfo()
+  }, [axiosPrivate])
+
   return { userInfo }
 }
 export default useUserInfo

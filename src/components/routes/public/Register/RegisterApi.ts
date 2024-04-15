@@ -45,16 +45,9 @@ export const postData = async (data: registerType) => {
   dataForm.append('email', data.email)
   dataForm.append('password', data.password)
 
-  axiosInstance
-    .post('create_user', dataForm, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-    .then((response) => {
-      console.log(response)
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+  return axiosInstance.post('create_user', dataForm, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
 }

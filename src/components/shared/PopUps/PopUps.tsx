@@ -7,10 +7,9 @@ export type popUpType = {
   type: 'worning' | 'error' | 'success'
   message: string
   title: string
-  id: number
 }
 
-const PopUps: React.FC<popUpType> = ({ id, type, message, title }) => {
+const PopUps: React.FC<popUpType> = ({ type, message, title }) => {
   const [animationComplete, setAnimationComplete] = useState(false)
   const [isHovered, setHovered] = useState(false)
 
@@ -37,7 +36,7 @@ const PopUps: React.FC<popUpType> = ({ id, type, message, title }) => {
         height: animationComplete ? 0 : '100%',
       }}
     >
-      <div id={`popUp-${id}`} className='w-screen sm:w-80 p-4 z-50'>
+      <div className='w-screen sm:w-80 p-4 z-50'>
         <div
           className={`${color[type]} w-full  h-20  rounded-lg shadow-lg flex  items-center`}
         >

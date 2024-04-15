@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { registerType } from './register'
 import RegisterActions from './RegisterActions'
 import RegisterForm from './RegisterForm'
-import { postData, validateData } from './RegisterApi'
-import { popUpType } from '../../../context/PopUpContext'
-import usePopUps from '../../../hooks/usePopUps'
-// type Props = {}
+import { validateData } from './RegisterApi'
+import useRegister from '../../../hooks/useRegister'
 
 const Register: React.FC = () => {
+  const [isLoading, setIsLoading] = React.useState<boolean>(false)
   const [isValid, setValid] = useState<boolean>(true)
   const [page, setPage] = useState<number>(0)
   const [errors, setErrors] = useState<Array<{ [key: string]: string }>>([{}])
@@ -22,16 +21,14 @@ const Register: React.FC = () => {
     password: '',
     passwordConfirmation: '',
   })
-  const { setPopUps } = usePopUps()
-  const RegisterAction = (
+  const { handleRegister } = useRegister({ data })
+  const RegisterAction = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ): void => {
+  ) => {
     e.preventDefault()
-    postData(data)
-    setPopUps((prev: Array<popUpType>) => [
-      ...prev,
-      { type: 'success', message: 'User Created', title: 'Success' },
-    ])
+    setIsLoading(true)
+    await handleRegister()
+    setIsLoading(false)
   }
   useEffect(() => {
     const checkValid = () => {
@@ -52,6 +49,7 @@ const Register: React.FC = () => {
           setData={setData}
         />
         <RegisterActions
+          isLoading={isLoading}
           page={page}
           isValid={isValid}
           setPage={setPage}

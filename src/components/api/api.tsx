@@ -9,7 +9,6 @@ export const SOCKET_URL = BASE_URL.startsWith('https://')
 
 export const axiosInstance = axios.create({
   baseURL: BASE_URL + '/api/v1/',
-  timeout: 5000,
   headers: {
     'Content-Type': 'application/json',
     accept: 'application/json',
@@ -18,7 +17,7 @@ export const axiosInstance = axios.create({
 
 export const axiosPrivate = axios.create({
   baseURL: BASE_URL + '/api/v1/',
-  timeout: 5000,
+  timeout: 100000,
   headers: {
     'Content-Type': 'application/json',
     accept: 'application/json',

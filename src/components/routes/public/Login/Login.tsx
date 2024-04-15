@@ -1,60 +1,27 @@
 import React from 'react'
 import PrimaryButton from '../../../shared/BasicElements/PrimaryButton'
 import Input from '../../../shared/BasicElements/Input'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { variants } from '../../../shared/annimations'
 import { RiChatSmile3Fill } from 'react-icons/ri'
-import { login, loginType, saveTokens } from './login'
-import useAuth from '../../../hooks/useAuth'
-import usePopUps from '../../../hooks/usePopUps'
+import { loginType } from './loginApi'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
-import { popUpType } from '../../../shared/PopUps/PopUps'
+import useLogin from '../../../hooks/useLogin'
 
 const Login: React.FC = () => {
-  const navigate = useNavigate()
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
   const [data, setData] = React.useState<loginType>({
     username: '',
     password: '',
   })
-  const { setAuth } = useAuth()
-  const { setPopUps } = usePopUps()
-  const handelLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
+
+  const { handelLogin } = useLogin({ data })
+
+  const handelLoginAction = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     setIsLoading(true)
-    const response = await login(data)
-    if (response.status === 200) {
-      saveTokens(response.data.access, response.data.refresh)
-      setAuth(true)
-      navigate('/')
-    }
-    if (response.status === 401) {
-      setPopUps((prev: Array<popUpType>) => [
-        ...prev,
-        {
-          type: 'error',
-          message: 'error',
-          title: 'Error',
-        } as popUpType,
-      ])
-      setPopUps((prev: Array<popUpType>) => [
-        ...prev,
-        {
-          type: 'worning',
-          message: 'worning',
-          title: 'worning',
-        } as popUpType,
-      ])
-      setPopUps((prev: Array<popUpType>) => [
-        ...prev,
-        {
-          type: 'success',
-          message: 'success',
-          title: 'success',
-        } as popUpType,
-      ])
-    }
+    await handelLogin()
     setIsLoading(false)
   }
   return (
@@ -97,7 +64,8 @@ const Login: React.FC = () => {
                 'Login'
               )
             }
-            onClick={handelLogin}
+            disabled={isLoading}
+            onClick={handelLoginAction}
           />
         </form>
       </motion.div>

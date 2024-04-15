@@ -1,38 +1,52 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useCallback, useContext, useEffect } from 'react'
 import { IoIosSend } from 'react-icons/io'
 import Input from '../../../shared/BasicElements/Input'
-import useWebSocket from 'react-use-websocket'
-import { SOCKET_URL } from '../../../api/api'
+import { conversation, message, messages } from './MessagesTypes'
+import SocketContext from '../../../context/SocketContext'
 
 type Props = {
   id: number | undefined
+  conversationData: conversation | undefined
+  messagesData: messages | undefined
+  setMassagesData: React.Dispatch<React.SetStateAction<messages | undefined>>
 }
 
-const MessageInput: React.FC<Props> = ({ id }: Props) => {
-  const [messageHistory, setMessageHistory] = useState<MessageEvent<unknown>[]>(
-    []
-  )
-  const [message, setMessage] = React.useState<string>('')
-  const [socketUrl] = useState(`${SOCKET_URL}/ws/chat/`)
+const MessageInput: React.FC<Props> = ({
+  conversationData,
+  setMassagesData,
+  messagesData,
+}: Props) => {
+  const [content, setContent] = React.useState<string>('')
+  const { sendMessage, lastMessage } = useContext(SocketContext)
 
-  const { sendMessage, lastMessage } = useWebSocket(socketUrl)
+  const handleClickSendMessage = useCallback(() => {
+    const message: message = {
+      id: Math.random(),
+      content: content,
+      sender: conversationData?.user1?.id ?? 0,
+      receiver: conversationData?.user2?.id ?? 0,
+      timestamp: new Date().toISOString(),
+    }
+    const messageText: string = JSON.stringify({ message: message })
 
+    setMassagesData({ messages: [...(messagesData?.messages ?? []), message] })
+    sendMessage(messageText)
+    setContent('')
+  }, [sendMessage, conversationData, content, messagesData, setMassagesData])
   useEffect(() => {
     if (lastMessage !== null) {
-      setMessageHistory((prev) => [...prev, lastMessage])
+      console.log('lastMessage', lastMessage)
+      const message = JSON.parse(lastMessage?.data).message as message
+
+      console.log('message', message)
+      console.log('conversationData', conversationData)
+      if (message.sender === conversationData?.user2?.id) {
+        setMassagesData({
+          messages: [...(messagesData?.messages ?? []), message],
+        })
+      }
     }
-    console.log(messageHistory)
   }, [lastMessage])
-
-  const handleClickSendMessage = useCallback(() => sendMessage('Hello'), [])
-
-  const handelSendMessage = async () => {
-    if (id) {
-      handleClickSendMessage()
-      console.log(message)
-      setMessage('')
-    }
-  }
 
   return (
     <div className=' flex justify-center'>
@@ -43,15 +57,15 @@ const MessageInput: React.FC<Props> = ({ id }: Props) => {
           label=''
           placeHolder='Start typing...'
           onChange={(e) => {
-            setMessage(e.target.value)
+            setContent(e.target.value)
           }}
           size='flex'
-          value={message}
+          value={content}
         />
         <button
           onClick={(e) => {
             e.preventDefault()
-            handelSendMessage()
+            handleClickSendMessage()
           }}
           className='flex justify-center items-center'
         >

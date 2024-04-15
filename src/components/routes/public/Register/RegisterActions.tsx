@@ -1,12 +1,14 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import SecondairyButton from '../../../shared/BasicElements/SecondairyButton'
 import PrimaryButton from '../../../shared/BasicElements/PrimaryButton'
+import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 
 type Props = {
   page: number
   isValid: boolean
   setPage: Dispatch<SetStateAction<number>>
   RegisterAction: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+  isLoading: boolean
 }
 
 const RegisterActions: React.FC<Props> = ({
@@ -14,6 +16,7 @@ const RegisterActions: React.FC<Props> = ({
   setPage,
   isValid,
   RegisterAction,
+  isLoading,
 }: Props) => {
   const NextAction = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -27,6 +30,7 @@ const RegisterActions: React.FC<Props> = ({
     e.preventDefault()
     setPage(0)
   }
+  console.log(isLoading && !isValid)
   return (
     <div className='flex justify-between w-full'>
       {page > 0 ? (
@@ -36,13 +40,17 @@ const RegisterActions: React.FC<Props> = ({
       )}
       {page === 0 ? (
         <SecondairyButton text='Next' onClick={NextAction} />
-      ) : isValid ? (
-        <PrimaryButton text='Register' onClick={RegisterAction} />
       ) : (
         <PrimaryButton
-          text='Register'
+          text={
+            isLoading ? (
+              <AiOutlineLoading3Quarters className='animate-spin w-4 h-4 fill-white' />
+            ) : (
+              'Register'
+            )
+          }
           onClick={RegisterAction}
-          disabled={true}
+          disabled={!isValid ? !isLoading : false}
         />
       )}
     </div>
